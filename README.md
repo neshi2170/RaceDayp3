@@ -215,15 +215,4 @@ The existing `.github/workflows/ci.yml` builds and tests the API. It must also b
 
 The workflow must run on pushes and pull requests. The included MVC application has no direct database connection and uses the same solution-level build pipeline.
 
-## Submission items you must complete from your own accounts
 
-- Push the project to your own ARC/GitHub repository and submit that repository URL. I cannot create commits or publish to your account from this workspace.
-- Make at least 20 meaningful commits as required by the brief. Commit genuine milestones (MVC setup, API client, authentication, dashboards, event CRUD, categories, enrolments, results, Blob Storage, Docker, styling, documentation and fixes); do not manufacture empty commits.
-- Run the solution and verify the GitHub Actions workflow is green before taking a screenshot.
-- Record and upload an unlisted YouTube demonstration. Show the solution structure, API/MVC running, both roles, event creation, category enrolment, organiser entrant list, result capture, Blob upload (when configured), and Docker startup. Add your real video URL to the submission.
-
-## Important verification note
-
-The development environment used to prepare this archive did not have the .NET SDK installed, so `dotnet restore`, `dotnet build`, and `dotnet test` could not be executed here. Run those commands in Visual Studio or on a machine with .NET 8 before submitting, and fix any environment-specific connection strings or launch ports. Never submit real secrets in source control.
-
-For Azure Storage accounts that block anonymous access by default, enable blob-level public access on the storage account if you want the returned image URLs to render directly in browsers. Use a dedicated account/container for assignment media and do not store private documents in these public image containers.
