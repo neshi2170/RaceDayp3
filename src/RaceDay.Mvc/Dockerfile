@@ -1,0 +1,12 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY src/RaceDay.Mvc/RaceDay.Mvc.csproj src/RaceDay.Mvc/
+RUN dotnet restore src/RaceDay.Mvc/RaceDay.Mvc.csproj
+COPY src/RaceDay.Mvc/ src/RaceDay.Mvc/
+RUN dotnet publish src/RaceDay.Mvc/RaceDay.Mvc.csproj -c Release -o /app/publish
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+ENV ASPNETCORE_URLS=http://+:8081
+EXPOSE 8081
+ENTRYPOINT ["dotnet","RaceDay.Mvc.dll"]

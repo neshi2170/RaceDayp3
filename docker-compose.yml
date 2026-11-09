@@ -1,0 +1,36 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-RaceDay_Strong_Passw0rd!}"
+    ports: ["1433:1433"]
+    volumes: ["sql_data:/var/opt/mssql"]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '$$MSSQL_SA_PASSWORD' -C -Q 'SELECT 1' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+  api:
+    build:
+      context: .
+      dockerfile: src/RaceDay.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__RaceDay: "Server=sqlserver,1433;Database=RaceDayDB;User Id=sa;Password=${MSSQL_SA_PASSWORD:-RaceDay_Strong_Passw0rd!};TrustServerCertificate=True"
+      Jwt__Key: "${JWT_KEY:-Docker_RaceDay_Dev_Key_Change_For_Production_2026_At_Least_32_Chars}"
+      AzureBlobStorage__ConnectionString: "${AZURE_BLOB_CONNECTION_STRING:-}"
+    ports: ["8080:8080"]
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+  mvc:
+    build:
+      context: .
+      dockerfile: src/RaceDay.Mvc/Dockerfile
+    environment:
+      Api__BaseUrl: "http://api:8080/"
+    ports: ["8081:8081"]
+    depends_on: [api]
+volumes:
+  sql_data:
